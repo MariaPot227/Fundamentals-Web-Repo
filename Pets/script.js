@@ -1,3 +1,11 @@
+let sortButton = document.createElement("button");
+sortButton.textContent = "Sort by Age";
+sortButton.addEventListener("click", sortAge);
+
+//let heading = document.querySelector("h1");
+//heading.insertAdjacentElement("afterend", sortButton);
+document.body.appendChild(sortButton);
+
 let pets = [
   { name: "Garfield", type: "cat", age: 3, adopted: false },
   { name: "Gar", type: "dog", age: 1, adopted: false },
@@ -5,11 +13,18 @@ let pets = [
   { name: "Fifi", type: "cat", age: 1, adopted: false },
 ];
 
+
 function displayPet(pet) {
   let cssClass = pet.adopted ? "pet adopted" : "pet available";
-  let statusText = pet.adopted ? "Adopted" : "Available for Adoption";
+  let bntAdopt = pet.adopted ? `<button type "button" id=${pet.name}>adopted</button>` : `<button type="button" id=${pet.name}>adopt</button>`;
 
-  let html = `<div class="${cssClass}">Pet name is ${pet.name} ${pet.type} ${pet.age} ${pet.adopted}</div>`;
+  let html = `<div class="${cssClass}">
+  
+  Pet name is ${pet.name} ${pet.type} ${pet.age} ${pet.adopted}
+  ${bntAdopt}
+  </div>`;
+
+
 
   return html;
 }
@@ -22,33 +37,33 @@ function showAllPets() {
     container.innerHTML += displayPet(pet);
   });
 
-  for(const pet of pets)
-  {
-
-  }
+  pets.forEach((pet) => {
+    let btn = document.getElementById(pet.name);
+    if (btn) {
+      btn.addEventListener("click", () => adoptPet(pet.name));
+    }
+  });
 
 }
+
+
 
 function adoptPet(petName) {
 
-    /*
-    for (let i = 0; i < pets.length; i++) {
-        if (pets[i].name === petName) {
-            pets[i].adopted = true;
-            break; 
-        }
-    }
-*/
-
-    for (let pet of pets) {
-        if (pet.name === petName) {
-            pet.adopted = true;
-            break;
-        }
+  for (let pet of pets) {
+    if (pet.name === petName) {
+      pet.adopted = !pet.adopted;
+      break;
     }
 
-    
-    showAllPets();
+  }
+  showAllPets();
 }
-adoptPet("Garfield");
+
+function sortAge()
+{
+  pets.sort((a, b) => a.age - b.age);
+  showAllPets();
+}
+
 showAllPets();
