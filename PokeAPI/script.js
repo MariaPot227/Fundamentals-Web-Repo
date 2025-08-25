@@ -14,12 +14,16 @@ async function getData() {
 }
 
 function displayPokeList(data) {
+    const list = document.createElement('ul');
+    
     for (const poke of data) {
-        const div = document.createElement('div');
-        div.innerHTML = `<a href="${poke.url}">${poke.name}</a>`;
-        document.body.appendChild(div);
-
+        list.innerHTML += `<li>${poke.name}</li>`;
+        document.body.appendChild(list);
     }
+}
+
+function showPokemon() {
+
 }
 
 getData();
