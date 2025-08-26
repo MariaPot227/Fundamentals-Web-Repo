@@ -14,22 +14,33 @@
 
     <script>
 
-        const book = {
-            "id": 42,
-            "title": "The Hitchhiker's Guide to the Galaxy",
-            "author": "Douglas Adams",
-            "year": 1979,
-            "genres": ["Science Fiction", "Comedy", "Adventure"],
-            "pages": 224,
-            "language": "English",
-            "imageUrl": "https://images-na.ssl-images-amazon.com/images/I/81XSN3hA5gL.jpg"
-        }
+        const book = [
+            {
+                "id": 42,
+                "title": "The Hitchhiker's Guide to the Galaxy",
+                "author": "Douglas Adams",
+                "year": 1979,
+                "genres": ["Science Fiction", "Comedy", "Adventure"],
+                "pages": 224,
+                "language": "English",
+                "imageUrl": "https://images-na.ssl-images-amazon.com/images/I/81XSN3hA5gL.jpg"
+            },
+            {
+                "id": 2,
+                "title": "To the Galaxy",
+                "author": "Atlas Adams",
+                "year": 1962,
+                "genres": ["Science Fiction", "Comedy", "Adventure"],
+                "pages": 234,
+                "language": "English",
+                "imageUrl": "https://images-na.ssl-images-amazon.com/images/I/81XSN3hA5gL.jpg"
+            }
+        ]
 
         //const card = document.getElementById("book-card")
 
         function createCard(book) {
             const card = document.createElement("div");
-            card.className = "card";
             card.innerHTML = `
             <img src="${book.imageUrl}">
             <h2>${book.title}</h2>
