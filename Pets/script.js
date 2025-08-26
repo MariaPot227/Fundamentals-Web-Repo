@@ -2,9 +2,24 @@ let sortButton = document.createElement("button");
 sortButton.textContent = "Sort by Age";
 sortButton.addEventListener("click", sortAge);
 
+let filterButton = document.createElement("button");
+filterButton.textContent = "Available";
+filterButton.addEventListener("click", () => showAllPets("available"));
+
+let showAllButton = document.createElement("button");
+showAllButton.textContent = "Show all";
+showAllButton.addEventListener("click", () => showAllPets());
+
+let catButton = document.createElement("button");
+catButton.textContent = "Cats";
+catButton.addEventListener("click", () => showAllPets("cat"));
+
 //let heading = document.querySelector("h1");
 //heading.insertAdjacentElement("afterend", sortButton);
 document.body.appendChild(sortButton);
+document.body.appendChild(filterButton);
+document.body.appendChild(showAllButton);
+document.body.appendChild(catButton);
 
 let pets = [
   { name: "Garfield", type: "cat", age: 3, adopted: false },
@@ -29,11 +44,16 @@ function displayPet(pet) {
   return html;
 }
 
-function showAllPets() {
+function showAllPets(filter = "all") {
   let container = document.getElementById("pet-list");
   container.innerHTML = "";
 
   pets.forEach((pet) => {
+
+    if (filter === "available" && pet.adopted) return;
+    if (filter === "adopted" && !pet.adopted) return;
+    if (filter === "cat"  && pet.type !== "cat") return;
+
     container.innerHTML += displayPet(pet);
   });
 
@@ -46,7 +66,16 @@ function showAllPets() {
 
 }
 
+// function cats() {
+//   let container = document.getElementById("pet-list");
+//   container.innerHTML = "";
 
+//   pets.forEach((pet) => {
+//     if (pet.type !== "cat") return;
+
+//     container.innerHTML += displayPet(pet);
+//   });
+// }
 
 function adoptPet(petName) {
 
@@ -60,8 +89,7 @@ function adoptPet(petName) {
   showAllPets();
 }
 
-function sortAge()
-{
+function sortAge() {
   pets.sort((a, b) => a.age - b.age);
   showAllPets();
 }

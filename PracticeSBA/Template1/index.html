@@ -1,0 +1,104 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Template 1</title>
+</head>
+
+<body>
+    <div class="card" id="book-card">
+        <!-- Do not hardcode the content here, use JavaScript -->
+    </div>
+
+    <script>
+
+        const book = {
+            "id": 42,
+            "title": "The Hitchhiker's Guide to the Galaxy",
+            "author": "Douglas Adams",
+            "year": 1979,
+            "genres": ["Science Fiction", "Comedy", "Adventure"],
+            "pages": 224,
+            "language": "English",
+            "imageUrl": "https://images-na.ssl-images-amazon.com/images/I/81XSN3hA5gL.jpg"
+        }
+
+        //const card = document.getElementById("book-card")
+
+        function createCard(book) {
+            const card = document.createElement("div");
+            card.className = "card";
+            card.innerHTML = `
+            <img src="${book.imageUrl}">
+            <h2>${book.title}</h2>
+            <h3>${book.author}</h3>
+            <p>${book.year}</p>
+            <p>${book.genres}</p>
+            <p>${book.pages}</p>
+            <p>${book.language}</p>
+            `;
+
+            return card;
+
+        }
+
+        const container = document.getElementById("book-card");
+        container.appendChild(createCard(book));
+        // Your JavaScript here - populate the card with book data
+
+    </script>
+
+    <style>
+        /* Your CSS here
+           Requirements:
+           - Card width of 300px with a border
+           - Text color #333
+           - Title 1.5 times as big as base font
+           - Headings should be uppercase
+           - Use flexbox for layout
+        */
+
+        body {
+            /*flexible box layout module*/
+            display: flex;
+            /*spacing between rows and columns in flexbox*/
+            gap: 20px;
+            /*flex items move to new line if no space*/
+            flex-wrap: wrap;
+            font-family: Arial, Helvetica, sans-serif;
+        }
+
+        .card {
+            width: 300px;
+            border: 1px solid #ccc;
+            border-radius: 10px;
+            padding: 15px;
+            color: #333;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+        }
+
+        .card img {
+            width: 150px;
+            /* smaller */
+            height: auto;
+            border-radius: 8px;
+            margin-bottom: 10px;
+        }
+
+        .card h2 {
+            font-size: 1.5em;
+            margin: 10px 0;
+            text-align: center;
+        }
+
+        .card h3 {
+            text-transform: uppercase;
+        }
+    </style>
+</body>
+
+</html>
