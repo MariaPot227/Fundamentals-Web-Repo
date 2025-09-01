@@ -1,0 +1,56 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Dogs Practice</title>
+<style>
+  /* Your CSS styles go here */
+</style>
+</head>
+<body>
+
+<!-- TASK 1 (6 points) --------------------------------------------------------------------------------
+1. Display a single dog card from a JS object.
+2. Include breed, origin, size, and temperament.
+3. Use JavaScript to populate dynamically.
+-->
+<div class="dog-card" id="single-dog-card"></div>
+<script>
+  // Example dog object
+  const dog = {
+    breed: "German Shepherd",
+    origin: "Germany",
+    size: "Large",
+    temperament: ["Intelligent", "Loyal", "Alert"],
+    image: "https://images.dog.ceo/breeds/germanshepherd/n02106662_5454.jpg"
+  };
+
+  // Your JS to render single dog goes here
+</script>
+
+<!-- TASK 2 (6 points) --------------------------------------------------------------------------------
+1. Fetch dogs from this mock API:
+   https://web1-z04e.onrender.com/dogs
+2. Loop through the data and create a card for each dog.
+3. Display cards in 3 columns.
+-->
+<div class="cards" id="dog-cards"></div>
+<script>
+  // Your JS to fetch & render multiple dogs goes here
+</script>
+
+<!-- TASK 3 (3 points) --------------------------------------------------------------------------------
+1. Add a filter by size using a select element.
+2. Only show dogs of the selected size.
+3. If "All" is selected, display all dogs.
+-->
+<aside id="dog-filter">
+  <!-- Your select element goes here -->
+</aside>
+<script>
+  // Your JS for size filter goes here
+</script>
+
+</body>
+</html>

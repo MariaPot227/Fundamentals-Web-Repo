@@ -1,0 +1,215 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>SBA Practice – Movies</title>
+</head>
+
+<body>
+
+    <!-- TASK 1 (6 points) --------------------------------------------------------------------------------
+    We have a single movie object below.
+    
+    1. Use JavaScript to populate the card with the movie data instead of hard coding it.
+    -->
+    <!--<h2>Inception</h2>
+    <img src="https://via.placeholder.com/300x400" alt="movie">
+    <div class="info">
+        <h3>GENRE</h3>
+        <p>Science Fiction</p>
+        <h3>YEAR</h3>
+        <p>2010</p>
+        <h3>DIRECTOR</h3>
+        <p>Christopher Nolan</p>
+    </div>
+    -->
+    <div class="card" id="single-movie-card"></div>
+
+    <h1>Movies List</h1>
+    <div class="filter-container">
+        <select id="yearFilter">
+            <option value="all">All Years</option>
+        </select>
+        <div class="search-container">
+            <input type="text" id="searchInput" placeholder="Search by title...">
+        </div>
+    </div>
+
+
+
+    <script>
+        const movie = {
+            "title": "Inception",
+            "genre": "Science Fiction",
+            "year": 2010,
+            "director": "Christopher Nolan",
+            "cast": ["Leonardo DiCaprio", "Joseph Gordon-Levitt", "Ellen Page"],
+            "poster": "https://via.placeholder.com/300x400"
+        }
+
+        const container = document.querySelector(".card");
+        const createOneCard = document.getElementById("single-movie-card");
+
+        function renderOneCard(movie) {
+            createOneCard.innerHTML = `
+            <img src="${movie.poster}" alt="${movie.title}">
+            <h3>${movie.title}</h3>
+            <p>${movie.year}</p>
+            <p>${movie.cast.join(", ")}</p>
+            `;
+
+        }
+
+        // Your JavaScript here
+    </script>
+
+    <style>
+        /* Write your styles here */
+        /*2. Style the card using CSS:
+        - Text color: #222
+        - h2 should be 1.5 times the base font size
+        - h3s should be 1.2 times the base font size
+        - Headings should be uppercase
+        - Use flexbox to arrange the card*/
+
+        body {
+            font-family: 'Courier New', Courier, monospace;
+            margin: 20px;
+            color: #222;
+        }
+
+        .card {
+            display: flex;
+            flex-wrap: wrap;
+
+        }
+
+        h3 {
+            font-size: 1.5em;
+            text-transform: uppercase;
+        }
+    </style>
+
+    <!-- TASK 2 (6 points) --------------------------------------------------------------------------------
+    Now we want a **list of movies**:
+
+    1. Fetch data from the API: https://api.sampleapis.com/movies/animation
+    2. Loop through the data and generate a card for each movie
+    3. Use the same card design as above
+    4. Display the cards in a responsive three-column grid
+    5. Commit your work
+-->
+    <div class="cards-container">
+        <!-- Your cards will go here -->
+    </div>
+
+    <script>
+        const url = "https://api.sampleapis.com/movies/animation";
+        const cardContainer = document.querySelector(".cards-container");
+        let data = [];
+
+        async function fetchData() {
+            const response = await fetch(url);
+            data = await response.json();
+
+            populateDropdown();
+            createCards(data);
+        }
+
+        function populateDropdown() {
+            const years = [...new Set(data.map(m => m.releaseDate?.split("-")[0]).filter(Boolean))].sort();
+            years.forEach(year => {
+                const option = document.createElement("option");
+                option.value = year;
+                option.textContent = year;
+                yearFilter.appendChild(option);
+            });
+        }
+
+        function createCards(data) {
+            cardContainer.innerHTML = "";
+            data.forEach(movie => {
+                const card = document.createElement("div");
+                card.innerHTML = `
+            <img src="${movie.posterURL || 'https://via.placeholder.com/300x400'}" alt="${movie.title}">
+            <h3>${movie.title}</h3>
+            <p>${movie.releaseDate || "Unknown"}</p>
+            <p>${movie.genres?.join(", ") || "N/A"}</p>
+        `;
+                cardContainer.appendChild(card);
+
+            });
+
+        }
+        const searchInput = document.getElementById("searchInput");
+
+        function filterMovies() {
+            const search = searchInput.value.toLowerCase();
+            const selectedYear = yearFilter.value;
+            let filtered = data;
+
+            if (search) {
+                filtered = filtered.filter(m => m.title.toLowerCase().includes(search));
+            }
+            createCards(filtered);
+        }
+
+        searchInput.addEventListener("input", filterMovies);
+        renderOneCard(movie);
+        fetchData();
+
+    </script>
+
+    <style>
+        /* Write your styles here */
+    </style>
+
+    <!-- TASK 3 (3 points) --------------------------------------------------------------------------------
+    Filtering movies by release year:
+
+    1. Add a select element with options for each unique release year in the dataset
+    2. When a year is selected, only display movies from that year
+    3. Add an "All" option to display all movies
+    4. Keep the three-column card layout responsive
+    5. Commit your work
+-->
+    <aside>
+        <!-- Your select element goes here -->
+    </aside>
+
+    <script>
+        // Your JavaScript here
+
+        function checkBoxPopulate() {
+            const years = [...new Set(moviesData.map(m => m.releaseDate?.split("-")[0]).filter(Boolean))].sort();
+            years.forEach(y => {
+                const label = document.createElement("label");
+                label.innerHTML = `<input type="checkbox" value="${y}"> ${y}`;
+                yearFilterContainer.appendChild(label);
+            });
+
+            const checkboxes = yearFilterContainer.querySelectorAll("input[type=checkbox]");
+            checkboxes.forEach(cb => cb.addEventListener("change", () => {
+                const selectedYears = Array.from(checkboxes)
+                    .filter(c => c.checked)
+                    .map(c => c.value);
+
+                const filtered = selectedYears.length
+                    ? moviesData.filter(m => selectedYears.includes(m.releaseDate?.split("-")[0]))
+                    : moviesData;
+
+                renderMovies(filtered);
+            }));
+        }
+
+
+    </script>
+
+
+
+
+</body>
+
+</html>

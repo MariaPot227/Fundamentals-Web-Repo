@@ -1,0 +1,102 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Books Practice</title>
+    <style>
+        /* Your CSS styles go here */
+        body {
+            font-family: 'Courier New', Courier, monospace;
+            margin: 20px;
+        }
+    </style>
+</head>
+
+<body>
+
+    <!-- TASK 1 (6 points) --------------------------------------------------------------------------------
+1. Create a single book card from a JS object.
+2. Display title, author, genre, and cover image.
+3. Use JavaScript to populate dynamically.
+-->
+    <div class="book-card" id="single-book-card"></div>
+    <script>
+        // Example book object
+        const book = {
+            title: "The Hobbit",
+            author: "J.R.R. Tolkien",
+            genre: "Fantasy",
+            cover: "https://covers.openlibrary.org/b/id/6979861-L.jpg"
+        };
+
+        const singleBookContainer = document.getElementById("single-book-card");
+
+        function renderSingleBook(book) {
+            singleBookContainer.innerHTML = `
+            <img src="${book.cover}" alt="${book.title}">
+            <h2>${book.title}</h2>
+            <p>${book.author}</p>
+            <p>${book.genre}</p>
+            `;
+        }
+
+        renderSingleBook(book);
+
+        // Your JS to render single book goes here
+    </script>
+
+    <!-- TASK 2 (6 points) --------------------------------------------------------------------------------
+1. Fetch books from Open Library API:
+   https://openlibrary.org/search.json?subject=fantasy&limit=20
+2. Loop through data and generate a card for each book.
+3. Use CSS to display them in a 3-column grid.
+-->
+    <div class="cards" id="book-cards"></div>
+    <script>
+        // Your JS to fetch & render multiple books goes here
+        const url = "https://openlibrary.org/search.json?subject=fantasy&limit=20";
+        const bookContainer = document.getElementById("book-cards");
+        let data = [];
+
+        async function fetchData() {
+            const response = await fetch(url);
+            data = await response.json();
+
+            createCard(data.docs);
+        }
+
+        function createCard(data) {
+            bookContainer.innerHTML = "";
+            data.forEach(b => {
+                const card = document.createElement("div");
+                card.className = "book-card";
+                card.innerHTML = `
+                <img src="${b.cover}" alt="${b.title}">
+                <h2>${b.title}</h2>
+                <p>${b.author}</p>
+                <p>${b.genre}</p>
+                `;
+                bookContainer.appendChild(card);
+            });
+        }
+
+        fetchData();
+    </script>
+
+    <!-- TASK 3 (3 points) --------------------------------------------------------------------------------
+1. Add a filter by genre using checkboxes (Fantasy, Romance, Mystery, etc.).
+2. Only display books of the selected genres.
+3. If none selected, show all books.
+-->
+    <aside id="book-filter">
+        <!-- Your checkbox elements go here -->
+    </aside>
+    <script>
+        // Your JS for checkbox filter goes here
+    </script>
+
+</body>
+
+</html>

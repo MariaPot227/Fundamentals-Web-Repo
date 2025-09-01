@@ -1,0 +1,92 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Movies Practice</title>
+  <style>
+    /* Your CSS styles go here */
+  </style>
+</head>
+
+<body>
+
+  <!-- TASK 1 (6 points) --------------------------------------------------------------------------------
+1. Display a single movie card using a JS object.
+2. Include title, release year, and poster image.
+3. Populate dynamically with JS.
+-->
+  <div class="movie-card" id="single-movie-card"></div>
+  <script>
+    // Example movie object
+    const movie = {
+      title: "Spirited Away",
+      releaseDate: "2001-07-20",
+      poster: "https://sampleapis.com/movies/api/animation/spirited-away.jpg"
+    };
+
+    const singleMovieContainer = document.getElementById("single-movie-card");
+    function renderOneMovie(movie) {
+      singleMovieContainer.innerHTML = `
+    <img src="${movie.poster}" alt="${movie.title}">
+    <h2>${movie.title}</h2>
+    <p>${movie.releaseDate}</p>
+    `;
+
+    }
+    renderOneMovie(movie);
+
+    // Your JS to render single movie goes here
+  </script>
+
+  <!-- TASK 2 (6 points) --------------------------------------------------------------------------------
+1. Fetch movies from SampleAPIs:
+   https://api.sampleapis.com/movies/animation
+2. Loop through the data and generate a card for each movie.
+3. Display them in a 3-column layout.
+-->
+  <div class="cards" id="movie-cards"></div>
+  <script>
+    // Your JS to fetch & render multiple movies goes here
+    const movieContainer = document.getElementById("movie-cards");
+    const url = "https://api.sampleapis.com/movies/animation";
+    let data = [];
+
+    async function fetchData() {
+      const response = await fetch(url);
+      data = await response.json();
+
+      createCard(data);
+    }
+
+    function createCard(data) {
+      movieContainer.innerHTML = "";
+      data.forEach(movie => {
+        const card = document.createElement("div");
+        card.innerHTML = `
+        <img src="${movie.posterURL}" alt="${movie.title}">
+        <h2>${movie.title}</h2>
+        `;
+        movieContainer.appendChild(card);
+      });
+
+    }
+    fetchData();
+    </script>
+
+  <!-- TASK 3 (3 points) --------------------------------------------------------------------------------
+1. Add a filter by release year using checkboxes.
+2. Only show movies from the selected years.
+3. If no checkbox is selected, show all movies.
+-->
+  <aside id="movie-filter">
+    <!-- Your checkbox elements go here -->
+  </aside>
+  <script>
+    // Your JS for checkbox year filter goes here
+  </script>
+
+</body>
+
+</html>

@@ -1,0 +1,204 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Books Practice</title>
+  <style>
+    body {
+      font-family: Arial, sans-serif;
+      margin: 20px;
+      color: #333;
+    }
+
+    .filter-container {
+      position: absolute;
+      /* Moves the filter bar visually above other elements */
+      display: flex;
+      flex-wrap: wrap;
+      gap: 10px;
+      padding: 10px 20px;
+      background: #fff;
+      border-bottom: 1px solid #ccc;
+    }
+
+    .book-card {
+      width: 220px;
+      border: 1px solid #333;
+      padding: 10px;
+      margin: 10px;
+    }
+
+    .cards {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 10px;
+    }
+
+    h2 {
+      font-size: 1.5em;
+      text-transform: uppercase;
+    }
+
+    h3 {
+      font-size: 1.2em;
+      text-transform: uppercase;
+    }
+  </style>
+</head>
+
+<body>
+
+  <!-- TASK 1 (6 points) --------------------------------------------------------------------------------
+1. Create a single book card from the JS object.
+2. Display title, author, genre, and cover image.
+3. Use JavaScript to fill in the card instead of hard coding.
+-->
+  <div class="book-card" id="single-book-card"></div>
+  <script>
+    // Your JavaScript for Task 1 here
+    const singleBookContainer = document.getElementById("single-book-card");
+
+    const book = {
+      "title": "book",
+      "author": "john"
+    }
+
+    function renderSingleBook(book) {
+      singleBookContainer.innerHTML = `
+      <h2>${book.title}</h2>
+      <h3>${book.author}</h3>
+      `;
+    }
+
+    renderSingleBook(book);
+  </script>
+
+  <!-- TASK 2 (6 points) --------------------------------------------------------------------------------
+1. Loop through an array of books (given in JS).
+2. Generate a card for each book.
+3. Use CSS to display them in a grid with 3 columns.
+-->
+  <div class="cards" id="book-cards"></div>
+  <script>
+    // Your JavaScript for Task 2 here
+    const bookContainer = document.getElementById("book-cards");
+    const url = "https://openlibrary.org/search.json?subject=fantasy&limit=20";
+    let data = [];
+
+    async function fetchData() {
+      const response = await fetch(url);
+      data = await response.json();
+
+      populateCheckbox();
+      populateDropdown();
+      createCard(data.docs);
+
+    }
+
+    function createCard(data) {
+      bookContainer.innerHTML = "";
+      data.forEach(book => {
+        const card = document.createElement("div");
+        card.className = "book-card";
+        card.innerHTML = `
+        <h2>${book.title}</h2>
+        <h3>${(book.language || []).join(", ")}</h3>
+        `;
+        bookContainer.appendChild(card);
+
+      });
+    }
+
+
+  </script>
+
+  <!-- TASK 3 (3 points) --------------------------------------------------------------------------------
+1. Add a dropdown to filter by language
+2. Only show books of the selected genre.
+3. If "All" is chosen, show all books.
+-->
+  <aside>
+    <!-- Select element for filtering -->
+    <div class="filter-container">
+      <select id="languageFilter"></select>
+      <div class="search-container">
+        <input type="text" id="searchInput">
+      </div>
+      <div class="checkbox-container"></div>
+      <div class="radio-container"></div>
+    </div>
+
+  </aside>
+  <script>
+    // Your JavaScript for Task 3 here
+    const filterContainer = document.querySelector(".filter-container");
+    
+    const languageSelect = document.getElementById("languageFilter");
+    const searchInput = document.getElementById("searchInput");
+    const ebookCheckbox = document.querySelector(".checkbox-container");
+    const scanRadio = document.querySelector(".radio-container");
+
+    function populateDropdown() {
+      const languages = [...new Set(data.docs.flatMap(b => b.language))];
+      languageSelect.innerHTML = `<option value = "all">All</option>` + languages.map(b => `<option value = "${b}">${b}</option>`);
+      filterContainer.appendChild(languageSelect);
+
+      languageSelect.addEventListener("change", filter);
+    }
+
+    function populateCheckbox() {
+      const access = [...new Set(data.docs.map(b => b.ebook_access).filter(Boolean))];
+
+      access.forEach(type => {
+        const label = document.createElement("label");
+        label.innerHTML = `<input type="checkbox" value="${type}"> ${type}`;
+        ebookCheckbox.appendChild(label);
+
+      });
+
+      const checkboxes = ebookCheckbox.querySelectorAll("input[type=checkbox]");
+
+      checkboxes.forEach(cb => cb.addEventListener("change", filter));
+    }
+
+    function populateRadio() {
+      const scans = [...new Set(data.docs.map(b => b.public_scan_b))];
+
+      const allRadio = document.createElement("label");
+       allRadio.innerHTML = ``;
+    }
+
+    function filter() {
+      let filtered = data.docs;
+
+      const selectLanguage = languageSelect.value;
+      if (selectLanguage !== "all") {
+        filtered = filtered.filter(b => (b.language).includes(selectLanguage));
+      }
+
+      const search = searchInput.value.toLowerCase();
+      if (search) {
+        filtered = filtered.filter(b => b.title.toLowerCase().includes(search));
+      }
+
+      const checkedValues = [...ebookCheckbox.querySelectorAll("input[type=checkbox]:checked")].map(cb => cb.value);
+      if (checkedValues.length) {
+        filtered = filtered.filter(b => checkedValues.includes(b.ebook_access));
+      }
+
+
+      createCard(filtered);
+
+    }
+
+    searchInput.addEventListener("input", filter);
+    fetchData();
+
+
+  </script>
+
+</body>
+
+</html>

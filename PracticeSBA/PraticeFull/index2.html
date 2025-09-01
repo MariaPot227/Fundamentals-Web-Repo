@@ -1,0 +1,193 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Practice SBA</title>
+  <style>
+    /* Base styles for cards */
+    body {
+      font-family: Arial, sans-serif;
+      margin: 20px;
+      color: #333;
+    }
+
+    .card {
+      width: 250px;
+      border: 1px solid #333;
+      border-radius: 10px;
+      padding: 10px;
+      margin: 10px;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+    }
+
+    .cards {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 10px;
+    }
+
+    h2 {
+      font-size: 1.5em;
+      text-transform: uppercase;
+    }
+
+    h3 {
+      font-size: 1.2em;
+      text-transform: uppercase;
+      margin-bottom: 5px;
+    }
+
+    image {
+      width: 100px;
+      height: 50px;
+    }
+  </style>
+</head>
+
+<body>
+
+  <!-- TASK 1 (6 points) --------------------------------------------------------------------------------
+1. Create a single card for a cat.
+2. Use JavaScript to populate the card dynamically from a cat object.
+3. Style the card:
+   - Text color #444
+   - h2 1.5x base font size
+   - h3 1.2x base font size
+   - All headings uppercase
+   - Use flexbox to layout the card
+4. Make a commit after completing this task.
+-->
+  <div class="cat-card" id="single-cat-card"></div>
+  <aside>
+    <!-- Your select element goes here -->
+    <h1>Cats</h1>
+    <div class="filter-container">
+      <select id="TempFilter">
+        <option value="all">all</option>
+      </select>
+    </div>
+  </aside>
+
+
+  <script>
+
+    const cat = {
+      "name": "John",
+      "temperament": ["Active", "sleepy"],
+      "image": "https://cdn2.thecatapi.com/images/4et.jpg"
+    }
+
+    const singleRender = document.getElementById("single-cat-card");
+    // Your JavaScript for Task 1 here
+    function renderSingleCard(cat) {
+      singleRender.innerHTML = `
+      <img src="${cat.image}" alt="${cat.name}">
+      <h2>${cat.name}</h2>
+      <p>${cat.temperament.join(", ")}</p>
+      `;
+
+    }
+
+    renderSingleCard(cat);
+
+  </script>
+
+  <!-- TASK 2 (6 points) --------------------------------------------------------------------------------
+1. Fetch multiple cats from an API (or use a sample array).
+API : https://api.thecatapi.com/v1/breeds
+2. Loop through the data and generate a card for each cat.
+3. Use the same card design as above.
+4. Display the cards in 3 columns, with as many rows as needed.
+5. Make a commit after completing this task.
+-->
+  <div class="cards" id="cat-cards"></div>
+  <script>
+    // Your JavaScript for Task 2 here
+
+    const catContainer = document.getElementById("cat-cards");
+    const url = "https://api.thecatapi.com/v1/breeds";
+    let data = [];
+
+    async function fetchData() {
+      const response = await fetch(url);
+      data = await response.json();
+
+      createCard(data);
+      radioPopulate();
+    }
+
+    function createCard(data) {
+      catContainer.innerHTML = "";
+      data.forEach(c => {
+        const card = document.createElement("div");
+        card.innerHTML = `
+      <h2>${c.name}</h2>
+      <p>${c.temperament}</p>
+      <p>${c.origin}</p>
+      `;
+        catContainer.appendChild(card);
+
+      });
+    }
+  </script>
+
+  <!-- TASK 3 (3 points) --------------------------------------------------------------------------------
+1. Add a select element to filter cats by temperament.
+2. When a user selects a temperament, only show cats with that temperament.
+3. If "All" is selected, display all cats.
+4. Keep the card layout consistent.
+5. Make a commit after completing this task.
+-->
+
+  <script>
+    function radioPopulate() {
+      // Your JavaScript for Task 3 here
+      const filterContainer = document.querySelector(".filter-container");
+      filterContainer.innerHTML = "";
+
+      //collect all unique temperaments
+      const temperaments = [...new Set(data.flatMap(c =>
+        c.temperament ? c.temperament.split(",").map(t => t.trim()) : []
+      ))].sort();
+
+      //add all
+      const allLabel = document.createElement("label");
+      allLabel.innerHTML = `<input type="radio" name="temp" value="all" checked> All`;
+      filterContainer.appendChild(allLabel);
+
+      //add the rest
+      temperaments.forEach(t => {
+        const label = document.createElement("label");
+        label.innerHTML = `<input type="radio" name="temp" value="${t}" checked> ${t}`;
+        filterContainer.appendChild(label);
+
+      });
+
+      const radio = filterContainer.querySelectorAll("input[type=radio]");
+
+      radio.forEach(r => r.addEventListener("change", () => {
+        const selected = filterContainer.querySelector("input[type=radio]:checked").value;
+        const filtered = selected === "all" ? data : data.filter(c => c.temperament.includes(selected));
+        createCard(filtered);
+      }));
+
+    }
+
+    createCard(data);
+    radioPopulate();
+
+    fetchData();
+
+  </script>
+
+  <style>
+    /* Additional CSS for Task 2 & 3 here */
+  </style>
+
+</body>
+
+</html>
