@@ -64,6 +64,7 @@
             const response = await fetch(url);
             data = await response.json();
 
+            populateDropdown();
             createCard(data.docs);
         }
 
@@ -82,7 +83,7 @@
             });
         }
 
-        fetchData();
+        
     </script>
 
     <!-- TASK 3 (3 points) --------------------------------------------------------------------------------
@@ -92,9 +93,36 @@
 -->
     <aside id="book-filter">
         <!-- Your checkbox elements go here -->
+         <div class="filter-container">
+            <select id="dateFilter"></select>
+         </div>
     </aside>
     <script>
         // Your JS for checkbox filter goes here
+        const filterContainer = document.querySelector(".filter-container");
+        const dateFilter = document.getElementById("dateFilter");
+        
+        function populateDropdown() {
+            const dates = [...new Set(data.docs.map(b => b.first_publish_year))];
+            dateFilter.innerHTML = `<option value ="all">all</option>` + dates.map(b => `<option value="${b}">${b}</option>`);
+            filterContainer.appendChild(dateFilter);
+
+            dateFilter.addEventListener("change", filter);
+        }
+
+        function filter() {
+            let filtered = data.docs;
+
+            const selected = dateFilter.value;
+            if(selected !== "all") {
+                filtered = filtered.filter(b => (b.first_publish_year == selected));
+            }
+
+            createCard(filtered);
+        }
+
+        fetchData();
+
     </script>
 
 </body>

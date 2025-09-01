@@ -1,0 +1,104 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Template 3</title>
+</head>
+
+<body>
+    <div class="filter-container">
+        <select id="filter">
+            <option value="all">All</option>
+        </select>
+    </div>
+
+    <div class="cards-container" id="cardContainer">
+        <!-- Your cards will be added here using JavaScript -->
+    </div>
+
+    <script>
+let allData = [];
+
+async function fetchData() {
+    const apiUrl = "https://jsonplaceholder.typicode.com/photos?_limit=20";
+    try {
+        const response = await fetch(apiUrl);
+        if (!response.ok) throw new Error(`response status: ${response.status}`);
+        const data = await response.json();
+        allData = data; // store fetched data
+        createDropdown();
+        displayCards(allData);
+    } catch (error) {
+        console.error(error.message);
+    }
+}
+
+function createDropdown() {
+    const select = document.getElementById("filter");
+    const albumIds = [...new Set(allData.map(item => item.albumId))];
+
+    albumIds.forEach(id => {
+        const option = document.createElement("option");
+        option.value = id;
+        option.textContent = "Album " + id;
+        select.appendChild(option);
+    });
+
+    select.addEventListener("change", () => {
+        const selected = select.value;
+        if (selected === "all") {
+            displayCards(allData);
+        } else {
+            const filtered = allData.filter(item => item.albumId == selected);
+            displayCards(filtered);
+        }
+    });
+}
+
+function displayCards(data) {
+    const container = document.getElementById("cardContainer");
+    container.innerHTML = ""; // clear previous cards
+
+    data.forEach(item => {
+        const card = document.createElement("div");
+        card.className = "card";
+        card.innerHTML = `<img src="${item.thumbnailUrl}" alt="${item.title}"><p>${item.title}</p>`;
+        container.appendChild(card);
+    });
+}
+
+fetchData();
+</script>
+
+
+    <style>
+        /* Your CSS here
+           Requirements:
+           - Same card layout as Template 2
+           - Filter container positioned at the top
+           - Maintain 3-column layout for cards
+        */
+
+        body {
+            font-family: 'Courier New', Courier, monospace;
+            padding: 20px;
+        }
+
+        .cards-container {
+            display: grid;
+            grid-template-columns: repeat(3, 1fr);
+            gap: 20px;
+        }
+
+        .card {
+            border: 1px solid #ccc;
+            text-align: center;
+            padding: 10px;
+
+        }
+    </style>
+</body>
+
+</html>

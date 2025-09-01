@@ -1,0 +1,48 @@
+<!DOCTYPE html>
+<html>
+
+<head>
+    <title>My Quiz</title>
+    <!-- Attach your stylesheet here -->
+</head>
+
+<body>
+    <h1>My Awesome Quiz</h1>
+    <form id="quiz-form">
+        <!-- Add your questions here -->
+        <fieldset class="question">
+            <legend>Colour question</legend>
+            <p>What's your favourite colour?</p>
+            <input type="radio" name="q1" value="red" id="red">
+            <label for="red">Red</label>
+            <input type="radio" name="q1" value="blue" id="blue">
+            <label for="blue">blue</label>
+            <input type="radio" name="q1" value="green" id="green">
+            <label for="green">green</label>
+        </fieldset>
+
+        <div class="question">
+            <p>What's SBA topics?</p>
+            <input type="checkbox" id="html" name="interest" value="html" />
+            <label for="html">HTML</label>
+            <input type="checkbox" id="css" name="interest" value="css" />
+            <label for="css">CSS</label>
+            <input type="checkbox" id="javascript" name="interest" value="javascript" />
+            <label for="javascript">JavaScript</label>
+        </div>
+
+        <div class="question">
+            <p>Fav subject?</p>
+            <label for="subject">Enter subject name: </label>
+            <input type="text" id="subject" name="subject" required>
+        </div>
+
+        <button type="submit" id="submit-btn">Check Answers</button>
+    </form>
+    <div id="results"></div>
+
+    <script src="script.js"></script>
+    <!-- Attach your script here -->
+</body>
+
+</html>

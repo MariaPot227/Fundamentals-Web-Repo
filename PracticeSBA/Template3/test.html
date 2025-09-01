@@ -1,0 +1,120 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Template 3</title>
+<style>
+  body {
+    font-family: Arial, sans-serif;
+    padding: 20px;
+  }
+
+  .filter-container {
+    margin-bottom: 20px;
+  }
+
+  select {
+    padding: 5px 10px;
+    font-size: 16px;
+  }
+
+  .cards-container {
+    display: grid;
+    grid-template-columns: repeat(3, 1fr);
+    gap: 20px;
+  }
+
+  .card {
+    border: 1px solid #ccc;
+    border-radius: 8px;
+    overflow: hidden;
+    text-align: center;
+    padding: 10px;
+    transition: transform 0.2s;
+  }
+
+  .card:hover {
+    transform: scale(1.05);
+  }
+
+  .card img {
+    width: 100%;
+    height: auto;
+    display: block;
+  }
+
+  .card-title {
+    margin-top: 10px;
+    font-size: 14px;
+    color: #333;
+  }
+</style>
+</head>
+<body>
+
+<div class="filter-container">
+  <label for="albumFilter">Filter by Album:</label>
+  <select id="albumFilter">
+    <option value="all">All</option>
+  </select>
+</div>
+
+<div class="cards-container" id="cardsContainer"></div>
+
+<script>
+const apiUrl = "https://jsonplaceholder.typicode.com/photos?_limit=20";
+let allData = [];
+
+async function fetchData() {
+  const res = await fetch(apiUrl);
+  allData = await res.json();
+  populateDropdown();
+  displayCards(allData);
+}
+
+function populateDropdown() {
+  const albumIds = [...new Set(allData.map(item => item.albumId))];
+  const select = document.getElementById("albumFilter");
+
+  albumIds.forEach(id => {
+    const option = document.createElement("option");
+    option.value = id;
+    option.textContent = "Album " + id;
+    select.appendChild(option);
+  });
+
+  select.addEventListener("change", () => {
+    const selected = select.value;
+    if (selected === "all") {
+      displayCards(allData);
+    } else {
+      const filtered = allData.filter(item => item.albumId == selected);
+      displayCards(filtered);
+    }
+  });
+}
+
+function displayCards(data) {
+  const container = document.getElementById("cardsContainer");
+  container.innerHTML = "";
+
+  data.forEach(item => {
+    const card = document.createElement("div");
+    card.className = "card";
+
+    card.innerHTML = `
+      <img src="${item.thumbnailUrl}" alt="${item.title}">
+      <div class="card-title"><strong>ID:</strong> ${item.id}<br>${item.title}</div>
+    `;
+
+    container.appendChild(card);
+  });
+}
+
+// Initialize
+fetchData();
+</script>
+
+</body>
+</html>

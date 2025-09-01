@@ -1,0 +1,100 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Filter Users by Company</title>
+</head>
+
+<body>
+    <div class="filter-container"></div>
+    <div class="cards-container"></div>
+
+    <script>
+        // API: https://jsonplaceholder.typicode.com/users
+        // 1. Fetch users from api
+
+        const url = "https://jsonplaceholder.typicode.com/users"
+        const container = document.querySelector(".cards-container");
+        const filterContainer = document.querySelector(".filter-container");
+
+        async function fetchData() {
+            const response = await fetch(url);
+            const data = await response.json();
+
+            createDropdown(data)
+
+            createCard(data);
+        }
+        // 2. Create dropdown for company names
+        function createDropdown(data) {
+            const companies = [...new Set(data.map(u => u.company.name))];
+            const select = document.createElement("select");
+
+            select.innerHTML = `<option value="all">All</option>` + companies.map(c => `<option value="${c}">${c}</option>`).join('');
+           
+            //companies.forEach(c => {
+              //  const option = document.createElement("option");
+                //option.value = c;
+                //option.textContent = c;
+                //select.appendChild(option);
+            //})
+            filterContainer.appendChild(select);
+
+            //event listener for when selected
+
+            select.addEventListener("change", () => {
+                const selected =select.value;
+                const filtered = selected === "all" ? data : data.filter(u => u.company.name === selected);
+                createCard(filtered);
+            })
+
+        }
+
+        //display each user in card showing name, email and company name
+
+        function createCard(user) {
+            container.innerHTML = "";
+            user.forEach(u => {
+                const card = document.createElement("div");
+                card.className = "user-card";
+
+                card.innerHTML = `
+                <h3>${u.name}</h3>
+                <p>${u.email}</p>
+                <p>${u.company.name}</p>
+                `;
+
+                container.appendChild(card);
+
+            })
+        }
+
+        fetchData();
+
+        // 3. Filter displayed cards when selection changes
+    </script>
+
+    <style>
+        /* Requirements:
+           - Card layout with name, email, company
+           - Filter container on top
+           - Responsive 3-column layout
+        */
+
+        body{
+            font-family: 'Courier New', Courier, monospace;
+            margin: 20px;
+        }
+
+        .cards-container{
+            display: grid;
+            grid-template-columns: repeat(3, 1fr);
+            gap: 20px;
+        }
+
+    </style>
+</body>
+
+</html>

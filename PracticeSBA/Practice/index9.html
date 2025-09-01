@@ -1,0 +1,76 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Filter Comments by Email Domain</title>
+</head>
+
+<body>
+    <div class="filter-container"></div>
+    <div class="cards-container"></div>
+
+    <script>
+        // API: https://jsonplaceholder.typicode.com/comments?_limit=20
+        // 1. Fetch comments
+
+        const url = "https://jsonplaceholder.typicode.com/comments?_limit=20";
+        const container = document.querySelector(".cards-container");
+        const filterContainer = document.querySelector(".filter-container");
+        let data = [];
+
+        async function fetchData() {
+            const response = await fetch(url);
+            data = await response.json();
+
+            createDropdown();
+            createCard(data);
+        }
+
+        // 2. Create dropdown for email domains
+        function createDropdown() {
+            const domains = [...new Set(data.map(c => c.email.split("@")[1]))];
+            const select = document.createElement("select");
+
+            select.innerHTML = `<option value="all">All</option>` + domains.map(c => `<option value="${c}">${c}</option>`);
+            filterContainer.appendChild(select);
+            
+            // 3. Filter displayed cards on selection
+            select.addEventListener("change", () => {
+                const selected = select.value;
+                const filtered = selected === "all"? data : data.filter(p => p.email.endsWith(selected));
+                createCard(filtered);
+            });
+        }
+
+        function createCard(data) {
+            container.innerHTML = "";
+            data.forEach(c => {
+                const card = document.createElement("div");
+                card.className = "comment-card";
+
+                card.innerHTML = `
+                <h3>${c.name}</h3>
+                <p><em>${c.email}</em></p>
+                <p>${c.body}</p>
+                `;
+
+                container.appendChild(card);
+            });
+            
+        }
+        fetchData();
+
+    </script>
+
+    <style>
+        /* Requirements:
+           - Cards show name, email, body
+           - Filter container on top
+           - 3-column grid, responsive
+        */
+    </style>
+</body>
+
+</html>

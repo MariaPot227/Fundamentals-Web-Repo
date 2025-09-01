@@ -1,0 +1,85 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Template</title>
+</head>
+
+<body>
+    <div class="pokemon-container" id="pokemon"></div>
+
+    <script>
+        // API: https://pokeapi.co/api/v2/pokemon?limit=20
+        //fetch data from api
+        const url = "https://pokeapi.co/api/v2/pokemon?limit=20";
+        const container = document.getElementById("pokemon");
+        let data = [];
+
+        async function fetchData() {
+            try {
+                const response = await fetch(url);
+                data = await response.json();
+
+                for (const poke of data.results) {
+                    const pokeResponse = await fetch(poke.url);
+                    const pokeData = await pokeResponse.json();
+
+                    createCard(pokeData);
+                }
+            } catch (error) {
+                console.error(error.message);
+            }
+        }
+
+        //show each name, image inside a card
+
+        function createCard(pokemon) {
+            const card = document.createElement("div");
+            card.className = "pokemon-card";
+
+            const imgSrc = pokemon.sprites.front_default || "https://via.placeholder.com/100";
+
+            card.innerHTML = `
+        <img src="${imgSrc}" alt="${pokemon.name}">
+        <h3>${pokemon.name}</h3>
+    `;
+
+            container.appendChild(card);
+        }
+
+
+
+        fetchData();
+
+    </script>
+
+    <style>
+        /* Requirements:
+           - 5-column grid on desktop
+           - Cards should all be equal size
+           - Responsive stacking on small screens
+        */
+        .pokemon-container {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(150px, 1fr));
+            gap: 15px;
+        }
+
+        .pokemon-card {
+            border: 1px solid #ccc;
+            border-radius: 10px;
+            padding: 10px;
+            text-align: center;
+            background-color: #f8f8f8;
+        }
+
+        .pokemon-card img {
+            width: 100px;
+            height: 100px;
+        }
+    </style>
+</body>
+
+</html>

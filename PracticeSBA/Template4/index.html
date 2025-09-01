@@ -1,0 +1,87 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Document</title>
+</head>
+
+<body>
+    <div class="filter-container"></div>
+    <input type="text" id="searchInput">
+    <div class="card-container"></div>
+
+    <script>
+        //Fetch movie data and display it in styled cards
+        const url = "https://api.sampleapis.com/movies/animation";
+        const container = document.querySelector(".card-container");
+        const filterContainer = document.querySelector(".filter-container");
+        const searchInput = document.getElementById("searchInput");
+        let data = [];
+
+        async function fetchData() {
+            const response = await fetch(url);
+            data = await response.json();
+
+
+            createFilter();
+            searchFilter();
+            createCard(data);
+        }
+
+        function createFilter() {
+           const movies = [...new Set(data.map(m => m.releaseDate?.split("-")[0]).filter(Boolean))].sort();
+           const select = document.createElement("select");
+           select.innerHTML = `<option value="all">All</option>` + movies.map(m => `<option value="${m}">${m}</option>`);
+
+           filterContainer.appendChild(select);
+
+           select.addEventListener("change", () => {
+            const selected = select.value;
+            createCard(selected === "all" ? data : data.filter(m => m.releaseDate?.startsWith(selected)));
+
+           });
+        }
+
+        function createCard(data) {
+            container.innerHTML = "";
+            data.forEach(m => {
+                const card = document.createElement("div");
+                card.className = "movie-card";
+
+                card.innerHTML = `
+                <img src="${m.posterURL}" alt="${m.title}">
+                <h2>${m.title}</h2>
+                `;
+                container.appendChild(card);
+            });
+
+        }
+
+        function searchFilter() {
+            const search = searchInput.value.toLowerCase();
+            
+            let filtered = data;
+
+            if(search) {
+                filtered = filtered.filter(m => m.title.toLowerCase().includes(search));
+            }
+
+            createCard(filtered);
+        }
+
+        searchInput.addEventListener("input", searchFilter);
+        fetchData();
+        //Implement search by title using a text input
+        //Add one additional feature of your choice
+
+    </script>
+
+    <style>
+        /*Arrange cards in a responsive 3-column grid*/
+    </style>
+
+</body>
+
+</html>

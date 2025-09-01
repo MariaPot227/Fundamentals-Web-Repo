@@ -1,0 +1,83 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Template</title>
+</head>
+
+<body>
+    <div class="posts-container">
+        <!-- Posts go here -->
+    </div>
+
+    <script>
+        // API: https://jsonplaceholder.typicode.com/posts?_limit=10
+
+        //fetch lists of posts from API
+        const apiUrl = "https://jsonplaceholder.typicode.com/posts?_limit=10";
+        const container = document.querySelector(".posts-container");
+
+        async function fetchData() {
+            try {
+                const response = await fetch(apiUrl);
+                if (!response.ok) {
+                    throw new Error(`Repsonse status: ${response.status}`);
+                }
+                const data = await response.json();
+                createList(data);
+            } catch (error) {
+                console.error(error.message);
+            }
+        }
+
+        //loop through data and made list of post titles
+
+        function createList(data) {
+
+            data.forEach(data => {
+                const list = document.createElement("div");
+                list.className = "post-card";
+                list.innerHTML = `
+                <h3>${data.title}</h3>
+                <p>${data.body}</p>
+                `;
+                container.appendChild(list);
+
+            });
+
+        }
+
+        fetchData();
+    </script>
+
+    <style>
+        /* Requirements:
+           - Use Flexbox with 2 columns
+           - Cards have equal height
+           - Responsive: stack posts on small screens
+        */
+
+        body {
+            font-family: 'Courier New', Courier, monospace;
+            margin: 20px;
+        }
+
+        .posts-container {
+            display: flex;
+            flex-wrap: wrap;
+        }
+
+        .post-card {
+
+            flex: 1 1 calc(50% - 20px);
+            border: 1px solid #ccc;
+            padding: 15px;
+            border-radius: 8px;
+            box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+        }
+    </style>
+</body>
+
+</html>

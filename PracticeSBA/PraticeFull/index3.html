@@ -10,6 +10,7 @@
       font-family: Arial, sans-serif;
       margin: 20px;
       color: #333;
+      
     }
 
     .filter-container {
@@ -36,8 +37,8 @@
       gap: 10px;
     }
 
-    h2 {
-      font-size: 1.5em;
+    .book-card h2 {
+      font-size: 2.5em;
       text-transform: uppercase;
     }
 
@@ -91,6 +92,7 @@
       const response = await fetch(url);
       data = await response.json();
 
+      populateRadio();
       populateCheckbox();
       populateDropdown();
       createCard(data.docs);
@@ -134,7 +136,7 @@
   <script>
     // Your JavaScript for Task 3 here
     const filterContainer = document.querySelector(".filter-container");
-    
+
     const languageSelect = document.getElementById("languageFilter");
     const searchInput = document.getElementById("searchInput");
     const ebookCheckbox = document.querySelector(".checkbox-container");
@@ -164,11 +166,30 @@
     }
 
     function populateRadio() {
-      const scans = [...new Set(data.docs.map(b => b.public_scan_b))];
+      // Clear first
+      scanRadio.innerHTML = "";
 
-      const allRadio = document.createElement("label");
-       allRadio.innerHTML = ``;
+      // Collect all authors (from book.author_name array)
+      const authors = [...new Set(data.docs.flatMap(b => b.author_name || []))];
+
+      // Add "All" option first
+      const allLabel = document.createElement("label");
+      allLabel.innerHTML = `<input type="radio" name="authorFilter" value="all" checked> All`;
+      scanRadio.appendChild(allLabel);
+
+      // Add authors as options
+      authors.forEach(author => {
+        const label = document.createElement("label");
+        label.innerHTML = `<input type="radio" name="authorFilter" value="${author}"> ${author}`;
+        scanRadio.appendChild(label);
+      });
+
+      // Add listener
+      scanRadio.querySelectorAll("input[type=radio]").forEach(rb => {
+        rb.addEventListener("change", filter);
+      });
     }
+
 
     function filter() {
       let filtered = data.docs;
@@ -186,6 +207,11 @@
       const checkedValues = [...ebookCheckbox.querySelectorAll("input[type=checkbox]:checked")].map(cb => cb.value);
       if (checkedValues.length) {
         filtered = filtered.filter(b => checkedValues.includes(b.ebook_access));
+      }
+
+      const selectedAuthor = scanRadio.querySelector("input[type=radio]:checked")?.value;
+      if (selectedAuthor && selectedAuthor !== "all") {
+        filtered = filtered.filter(b => (b.author_name || []).includes(selectedAuthor));
       }
 
 

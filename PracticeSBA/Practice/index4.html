@@ -1,0 +1,100 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Document</title>
+</head>
+
+<body>
+
+    <div class="filter-container"></div>
+    <div class="comments-container" id="comments"></div>
+
+    <script>
+        // API: https://jsonplaceholder.typicode.com/comments?_limit=12
+
+        const url = "https://jsonplaceholder.typicode.com/comments?_limit=12";
+        const container = document.getElementById("comments");
+        let data = [];
+
+        async function fetchData() {
+            const response = await fetch(url);
+            data = await response.json();
+            
+            checkboxPopulate();
+            createCard(data);
+        }
+
+        //display each comment showing name, email and comment body
+        function createCard(comments) {
+            container.innerHTML = "";
+            comments.forEach(c => {
+                const card = document.createElement("div");
+                card.className = "comment-card"
+
+                card.innerHTML = `
+                <h2>"${c.name}</h2>
+                <p>"${c.email}</p>
+                <p>"${c.body}</p>
+                `;
+
+                container.appendChild(card);
+            })
+        }
+
+        function checkboxPopulate() {
+            const filterContainer = document.querySelector(".filter-container");
+            const postId = [...new Set(data.map(b => b.postId))];
+
+            postId.forEach(b => {
+                const label = document.createElement("label");
+                label.innerHTML = `<input type="checkbox" value ="${b}">${b}`;
+                filterContainer.appendChild(label);
+            });
+
+            const checkboxes = filterContainer.querySelectorAll("input[type=checkbox]");
+            checkboxes.forEach(cb => cb.addEventListener("change", () => {
+                const selected = Array.from(checkboxes)
+                    .filter(c => c.checked)
+                    .map(c => c.value);
+                createCard(selected.length ? data.filter(b => selected.includes(b.postId.toString())) : data);
+            }));
+        }
+        createCard(data);
+        checkboxPopulate();
+        fetchData();
+
+
+    </script>
+
+    <style>
+        /* Requirements:
+           - Flexbox with wrap
+           - Equal width cards
+           - Cards should have border and padding
+        */
+
+        body {
+            font-family: 'Courier New', Courier, monospace;
+            margin: 20px;
+        }
+
+        .comments-container {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 20px;
+        }
+
+        .comment-card {
+            flex: 1 1 calc(33.33% - 20px);
+            border: 1px solid #ccc;
+            border-radius: 10px;
+            padding: 15px;
+        }
+    </style>
+
+</body>
+
+</html>

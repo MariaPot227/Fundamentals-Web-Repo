@@ -1,0 +1,68 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Document</title>
+</head>
+
+<body>
+    <div class="filter-container"></div>
+    <div class="cards-container"></div>
+
+    <script>
+        const url = "https://jsonplaceholder.typicode.com/posts?_limit=20";
+        const container = document.querySelector(".cards-container");
+        const filterContainer = document.querySelector(".filter-container");
+        let data = [];
+
+        async function fetchData() {
+            const response = await fetch(url);
+            data = await response.json();
+
+            createFilter();
+            createCard(data);
+        }
+
+        function createFilter() {
+            const userId = [...new Set(data.map(p => p.userId))];
+
+            const allRadio = document.createElement("label");
+            allRadio.innerHTML = `<input type="radio" name="user" value="all" checked> All`;
+            filterContainer.appendChild(allRadio);
+
+            userId.forEach(u => {
+                const label = document.createElement("label");
+                label.innerHTML = `<input type="radio" name="user" value="${u}"> ${u}`;
+                filterContainer.appendChild(label);
+            });
+
+            const radios = filterContainer.querySelectorAll("input[type=radio]");
+
+            radios.forEach(r => r.addEventListener("change", () => {
+                const selected = filterContainer.querySelector("input[type=radio]:checked").value;
+                const filtered = selected === "all" ? data : data.filter(p => p.userId === Number(selected));
+                createCard(filtered);
+            }));
+        }
+
+        function createCard(data) {
+            container.innerHTML = "";
+            data.forEach(p => {
+                const card = document.createElement("div");
+                card.className = "post-card";
+                card.innerHTML = `
+                    <h2>${p.title}</h2>
+                    <p>${p.body}</p>
+                    `;
+                container.appendChild(card);
+            });
+        }
+
+        fetchData();
+    </script>
+
+</body>
+
+</html>

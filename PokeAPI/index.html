@@ -1,12 +1,60 @@
 <!DOCTYPE html>
 <html lang="en">
+
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>PokeAPI</title>
 </head>
+
 <body>
-    <h1>PokeAPI DATA</h1>
-    <script src="script.js"></script>
+    <div class="single-card"></div>
+
+    <script>
+        const singleContainer = document.querySelector(".single-card");
+
+        const pokemon =
+            { name: "spearow", url: "https://pokeapi.co/api/v2/pokemon/21/" }
+            ;
+
+        function renderSinglePokemon(pokemon) {
+            singleContainer.innerHTML = `
+            <h2>${pokemon.name}</h2>
+            <p>${pokemon.url}</p>
+            `;
+        }
+
+        renderSinglePokemon(pokemon);
+    </script>
+
+    <div class="card-container"></div>
+    <script>
+        const cardContainer = document.querySelector(".card-container");
+        const url = "https://pokeapi.co/api/v2/pokemon?limit=10&offset=20";
+        let data = [];
+
+        async function fetchData() {
+            const response = await fetch(url);
+            data = await response.json();
+            createCard(data.results);
+        }
+
+        function createCard(data) {
+            cardContainer.innerHTML = "";
+            data.forEach(p => {
+                const card = document.createElement("div");
+                card.innerHTML = `
+                <h2>${p.name}</h2>
+                <p>${p.url}</p>
+                `;
+                cardContainer.appendChild(card);
+            });
+        }
+
+        fetchData();
+    </script>
+
+
 </body>
+
 </html>

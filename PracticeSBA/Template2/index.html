@@ -1,0 +1,72 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Template 2</title>
+</head>
+
+<body>
+    <div class="cards-container" id="cards">
+        <!-- Your cards will be added here using JavaScript -->
+    </div>
+
+    <script>
+        // Fetch data from this API
+        // Your JavaScript here
+        // 1. Fetch the data
+
+        async function fetchData() {
+            const apiUrl = "https://reqres.in/api/users?per_page=12";
+            
+            try {
+                const response = await fetch(apiUrl);
+                if (!response.ok) {
+                    throw new Error(`Response status: ${response.status}`);
+                }
+                createCard(data.results)
+            } catch (error) {
+                console.error("Error fetching:", error.message);
+            }
+
+        }
+
+        // 2. Loop through the items and create cards
+
+        function createCard(users) {
+            users.foreach(user => {
+                const card = document.createElement("div");
+                card.innerHTML = `
+                <h2>"${user.name}"</h2>
+                `;
+
+                container.appendChild(cards-container);
+            });
+
+        }
+
+        fetchData();
+
+        // 3. Add the cards to the container
+        
+
+    </script>
+
+    <style>
+        /* Your CSS here
+           Requirements:
+           - Cards should be the same size
+           - Use CSS Grid for a 3-column layout
+           - Responsive design: cards should stack on mobile
+        */
+
+        body {
+            font-family: 'Courier New', Courier, monospace;
+            margin: 20px;
+            background: gray;
+        }
+    </style>
+</body>
+
+</html>

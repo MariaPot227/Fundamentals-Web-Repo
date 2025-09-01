@@ -1,0 +1,78 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Template</title>
+</head>
+
+<body>
+    <div class="products-container" id="products">
+        <!-- Products will load here -->
+    </div>
+
+    <script>
+        // API: https://fakestoreapi.com/products
+
+        //fetch data from api endpoint
+        const url = "https://fakestoreapi.com/products";
+        const container = document.getElementById("products");
+
+        async function fetchData() {
+            try {
+                const response = await fetch(url);
+                const data = await response.json();
+
+                createCard(data);
+
+            } catch (error) {
+                console.error(error.message);
+            }
+        }
+
+        //display each product in card with image, title and price
+
+        function createCard(product) {
+
+            product.forEach(p => {
+                const card = document.createElement("div");
+                card.className = "product-card";
+
+                card.innerHTML = `
+            <img src="${p.image}" alt="${p.title}">
+            <h2>"${p.title}</h2>
+            <p>"${p.price}</p>
+            `;
+                container.appendChild(card);
+            });
+
+        }
+
+        fetchData();
+
+    </script>
+
+    <style>
+        /* Requirements:
+           - Grid with 4/2/1 columns depending on screen size
+           - Cards should show image, title, price
+           - Add hover effect (scale or shadow)
+        */
+        body {
+            font-family: 'Courier New', Courier, monospace;
+
+        }
+
+        .products-container {
+            display: grid;
+            grid-template-columns: repeat(4, 1fr);
+        }
+
+        .product-card {
+            border: 1px solid #ddd;
+        }
+    </style>
+</body>
+
+</html>

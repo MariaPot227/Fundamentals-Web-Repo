@@ -42,7 +42,7 @@
         function createCard(book) {
             const card = document.createElement("div");
             card.innerHTML = `
-            <img src="${book.imageUrl}">
+            <img src="${book.imageUrl}" alt="${book.title}">
             <h2>${book.title}</h2>
             <h3>${book.author}</h3>
             <p>${book.year}</p>
@@ -56,7 +56,11 @@
         }
 
         const container = document.getElementById("book-card");
-        container.appendChild(createCard(book));
+        
+
+        book.forEach(b => {
+            container.appendChild(createCard(b));
+        });
         // Your JavaScript here - populate the card with book data
 
     </script>

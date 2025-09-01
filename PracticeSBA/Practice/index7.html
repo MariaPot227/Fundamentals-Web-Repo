@@ -1,0 +1,94 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Filter Products by Category</title>
+</head>
+
+<body>
+    <div class="filter-container"></div>
+    <div class="cards-container"></div>
+
+    <script>
+        // API: https://fakestoreapi.com/products
+        // 1. Fetch products
+        const url = "https://fakestoreapi.com/products";
+        const container = document.querySelector(".cards-container");
+        const filterContainer = document.querySelector(".filter-container");
+        
+
+        async function fetchData() {
+            const response = await fetch(url);
+            const data = await response.json();
+
+            createDropdown(data);
+            createCard(data);
+        }
+
+        // 2. Create dropdown for categories
+
+        function createDropdown(data) {
+            const categories = [...new Set(data.map(p => p.category))];
+            const select = document.createElement("select");
+            select.innerHTML = `<option value="all">All</option>` + categories.map(c => `<option value="${c}">${c}</option>`);
+
+            filterContainer.appendChild(select);
+            // 3. Filter cards when selection changes
+            select.addEventListener("change", () => {
+                const selected = select.value;
+                const filtered = selected === "all" ? data : data.filter(p => p.category === selected);
+                createCard(filtered);
+            })
+        }
+
+        function createCard(data) {
+            container.innerHTML = "";
+
+            data.forEach(p => {
+                const card = document.createElement("div");
+                card.className = "product-card";
+
+                card.innerHTML = `
+                <img src="${p.image}" alt="${p.title}">
+                <h3>${p.title}</h3>
+                <p>${p.price}</p>
+                `;
+
+                container.appendChild(card);
+
+            });
+        }
+
+        fetchData();
+    </script>
+
+    <style>
+        /* Requirements:
+           - Cards display image, title, price
+           - Filter container on top
+           - Grid layout with 3 columns, responsive
+        */
+        body {
+            font-family: 'Courier New', Courier, monospace;
+            margin: 20px;
+        }
+
+        .cards-container {
+            display: grid;
+            grid-template-columns: repeat(3, 1fr);
+        }
+
+        .filter-container {
+            margin-bottom: 20px;
+        }
+
+        .product-card {
+            border: 1px solid #333;
+            border-radius: 8px;
+        }
+    </style>
+</body>
+
+</html>

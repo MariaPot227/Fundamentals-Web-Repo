@@ -1,0 +1,84 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Filter Pokémon by Type</title>
+</head>
+
+<body>
+    <div class="filter-container"></div>
+    <div class="cards-container"></div>
+
+    <script>
+        // API: https://pokeapi.co/api/v2/pokemon?limit=20
+        // 1. Fetch Pokémon
+
+        const url = "https://pokeapi.co/api/v2/pokemon?limit=20";
+        const container = document.querySelector(".cards-container");
+        const filterContainer = document.querySelector(".filter-container");
+        const allPokemon = [];
+
+        async function fetchData() {
+            const response = await fetch(url);
+            const data = await response.json();
+
+            for (const p of data.results) {
+                const pokeResponse = await fetch(p.url);
+                const pokeData = await pokeResponse.json();
+
+                allPokemon.push({
+                    name: pokeData.name,
+                    img: pokeData.sprites.front_default,
+                    types: pokeData.types.map(t => t.type.name)
+                });
+
+
+            }
+            createDropdown();
+            createCard(allPokemon);
+        }
+
+        // 2. Create dropdown with type options
+        function createDropdown() {
+            const types = [...new Set(allPokemon.flatMap(p => p.types))];
+            const select = document.createElement("select");
+            select.innerHTML = `<option value="all">All</option>` + types.map(p => `<option value="${p}">${p}</option>`);
+            filterContainer.appendChild(select);
+
+            // 3. Filter cards based on selection
+            select.addEventListener("change", () => {
+                const selected = select.value;
+                const filtered = selected === "all" ? allPokemon : allPokemon.filter(p => p.types.includes(selected));
+                createCard(filtered);
+            });
+        }
+        function createCard(data) {
+            container.innerHTML = "";
+            data.forEach(p => {
+                const card = document.createElement("div");
+                card.className = "pokemon-card";
+
+                card.innerHTML = `
+                <h3>${p.name}</h3>
+                <img src="${p.img}" alt="${p.name}">
+                `;
+
+                container.appendChild(card);
+            });
+        }
+
+        fetchData();
+    </script>
+
+    <style>
+        /* Requirements:
+           - Cards display Pokémon name and image
+           - Filter container on top
+           - Grid with 3 columns, responsive on small screens
+        */
+    </style>
+</body>
+
+</html>

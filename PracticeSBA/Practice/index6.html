@@ -1,0 +1,88 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Filter Posts by User</title>
+</head>
+
+<body>
+    <div class="filter-container"></div>
+    <div class="cards-container"></div>
+
+    <script>
+        // API: https://jsonplaceholder.typicode.com/posts?_limit=20
+
+        const url = "https://jsonplaceholder.typicode.com/posts?_limit=20";
+        const container = document.querySelector(".cards-container");
+        const filterContainer = document.querySelector(".filter-container");
+
+        async function fetchData() {
+            const response = await fetch(url);
+            const data = await response.json();
+
+            createDropdown(data);
+            createCard(data);
+        }
+        // 2. Create dropdown for user IDs
+        function createDropdown(data) {
+            const userID = [...new Set(data.map(u => u.userId))];
+            const select = document.createElement("select");
+
+            select.innerHTML = `<option value="all">All</option>` +
+                   userID.map(u => `<option value="${u}">${u}</option>`);
+           
+            filterContainer.appendChild(select);
+
+            //event listener
+            // 3. Filter displayed cards on selection
+
+            select.addEventListener("change", () => {
+                const selected = select.value;
+                const filtered = selected === "all" ? data : data.filter(u => u.userId === Number(selected));
+                createCard(filtered);
+            })
+
+        }
+
+        // 1. Fetch posts
+        //display post in card with title and bodyre
+
+        function createCard(user) {
+            container.innerHTML = "";
+            user.forEach(u => {
+                const card = document.createElement("div");
+                card.className = "post-card";
+                card.innerHTML = `
+                <h3>${u.title}</h3>
+                <p>${u.body}</p>
+                `;
+                container.appendChild(card);
+
+            });
+
+        }
+
+        fetchData();
+    </script>
+
+    <style>
+        /* Requirements:
+           - Card layout with post title and body
+           - Filter dropdown on top
+           - Grid with 3 columns, responsive on mobile
+        */
+        body {
+            font-family: 'Courier New', Courier, monospace;
+            margin: 20px;
+        }
+        .cards-container {
+            display: grid;
+            grid-template-columns: repeat(3, 1fr);
+            gap: 30px;
+        }
+    </style>
+</body>
+
+</html>

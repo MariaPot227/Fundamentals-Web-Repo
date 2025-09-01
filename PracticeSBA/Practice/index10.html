@@ -1,0 +1,67 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Document</title>
+</head>
+
+<body>
+    <div class="filter-container"></div>
+    <div class="cards-container"></div>
+
+    <script>
+        const url = "https://jsonplaceholder.typicode.com/users";
+        const container = document.querySelector(".cards-container");
+        const filterContainer = document.querySelector(".filter-container");
+        let data = [];
+
+        async function fetchData() {
+            const response = await fetch(url);
+            data = await response.json();
+
+            createFilter();
+            createCard(data);
+        }
+
+        function createFilter() {
+            const companies = [...new Set(data.map(u => u.company.name))];
+            companies.forEach(company => {
+                const label = document.createElement("label");
+                label.innerHTML = `<input type="checkbox" value="${company}"> ${company}`;
+                filterContainer.appendChild(label);
+            });
+
+            const checkboxes = filterContainer.querySelectorAll("input[type=checkbox]");
+            checkboxes.forEach(cb => cb.addEventListener("change", () => {
+                const selected = Array.from(checkboxes)
+                    .filter(c => c.checked)
+                    .map(c => c.value);
+
+                const filtered = selected.length === 0 ? data : data.filter(u => selected.includes(u.company.name));
+                createCard(filtered);
+            }));
+        }
+
+        function createCard(data) {
+            container.innerHTML = "";
+            data.forEach(u => {
+                const card = document.createElement("div");
+                card.className = "user-card";
+
+                card.innerHTML = `
+                <h3>${u.name}</h3>
+                <p>${u.email}</p>
+                `;
+                container.appendChild(card);
+            });
+
+        }
+
+        fetchData();
+    </script>
+
+</body>
+
+</html>
