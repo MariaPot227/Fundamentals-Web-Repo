@@ -1,0 +1,157 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Hourly Weather</title>
+  <style>
+    body {
+      font-family: Arial, sans-serif;
+      padding: 20px;
+
+      display: flex;
+      flex-direction: column;
+    }
+
+    table {
+      width: 100%;
+      margin-top: 20px;
+    }
+
+    th,
+    td {
+      border: 1px solid #333;
+      padding: 8px;
+      text-align: center;
+    }
+
+    th {
+      background-color: #eee;
+    }
+
+    .card {
+      border: 1px solid #aaa;
+      padding: 10px;
+      margin: 5px 0;
+      border-radius: 5px;
+    }
+    aside {
+      order: -1;
+    }
+  </style>
+</head>
+
+<body>
+
+  <h1>Hourly Temperature</h1>
+
+  <button id="light-dark-toggle">Toggle</button>
+
+  <div id="cards-container"></div>
+  <table id="temp-table">
+    <thead>
+      <tr>
+        <th>Time</th>
+        <th>Temperature (°C)</th>
+      </tr>
+    </thead>
+    <tbody></tbody>
+  </table>
+
+  <aside>
+    <div id="size-checkboxes"></div>
+  </aside>
+
+  <script>
+    const url = "https://api.open-meteo.com/v1/forecast?latitude=52.52&longitude=13.41&hourly=temperature_2m";
+    let weather = [];
+    async function fetchWeather() {
+      try {
+        const response = await fetch(url);
+        weather = await response.json();
+        populateCheckbox();
+        displayWeather(weather);
+
+      } catch (error) {
+        console.error('Error fetching weather:', error);
+      }
+    }
+
+    // Create a card for a single hour
+    function createCard(time, temp) {
+      const card = document.createElement('div');
+      card.className = 'card';
+      card.innerHTML = `
+  <strong>${time}</strong>: 
+  ${temp}°C
+  `;
+
+      return card;
+    }
+
+    // Display data in both cards and table
+    function displayWeather(data) {
+      const tbody = document.querySelector('#temp-table tbody'); // <-- select tbody
+      tbody.innerHTML = '';
+
+      for (let i = 0; i < data.hourly.time.length; i++) {
+        const time = data.hourly.time[i];
+        const temp = data.hourly.temperature_2m[i];
+
+        // Add table row
+        const row = document.createElement('tr');
+        row.innerHTML = `<td>${time}</td><td>${temp}</td>`;
+        tbody.appendChild(row); // now tbody is defined
+      }
+    }
+
+    function populateCheckbox() {
+      const container = document.getElementById("size-checkboxes");
+      container.innerHTML = "";
+
+      const selected = [];
+
+      weather.hourly.temperature_2m.forEach(temp => {
+        if (!container.querySelector(`input[value="${temp}"]`)) {
+          const label = document.createElement("label");
+          label.innerHTML = `<input type="checkbox" value="${temp}">${temp}`;
+          container.appendChild(label);
+        }
+      });
+
+      container.addEventListener("change", (e) => {
+        const checkboxes = container.querySelectorAll("input[type=checkbox]");
+        const selectedTemp = [];
+
+        checkboxes.forEach(cb => {
+          if (cb.checked) selectedTemp[selectedTemp.length] = Number(cb.value);
+        });
+        if (selectedTemp === 0) {
+          displayWeather(weather);
+        } else {
+          selectedTemp.forEach(temp => showTempWeather(data, temp));
+        }
+      });
+    }
+
+    function showTempWeather(data, temp) {
+      const tbody = document.querySelector('#temp-table tbody'); // <-- select tbody
+      tbody.innerHTML = '';
+
+      data.forEach(weather => {
+        if (weather.hourly.temperature_2m.includes(temp)) {
+          const row = document.createElement('tr');
+          row.innerHTML = `<td>${time}</td><td>${temp}</td>`;
+          tbody.appendChild(row);
+        }
+      });
+
+    }
+    // Call the async function
+    fetchWeather();
+  </script>
+
+</body>
+
+</html>
